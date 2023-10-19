@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow
+from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow
 import asyncio
 from qasync import QEventLoop, asyncSlot
 
