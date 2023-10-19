@@ -1,22 +1,35 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow
 import asyncio
+from qasync import QEventLoop, asyncSlot
 
 
-async def window():
+class Window(QMainWindow):
+    def __init__(self, loop=None):
+        super().__init__()
+        button1 = QPushButton("ClickHere")
+        self.setCentralWidget(button1)
+        button1.clicked.connect(self.button1_clicked)
+        self.loop = loop or asyncio.get_event_loop
+
+    @asyncSlot()
+    async def button1_clicked(self):
+        print("clicked")
+        await asyncio.sleep(1, self.loop)
+
+
+async def main():
     app = QApplication(sys.argv)
-    widget = QWidget()
+    loop = QEventLoop(app)
+    asyncio.set_event_loop(loop)
 
-    button1 = QPushButton(widget)
-    button1.clicked.connect(await button1_clicked)
-
+    widget = Window(loop)
     widget.show()
-    sys.exit(app.exec_())
 
-
-async def button1_clicked():
-    print("clicked")
+    with loop:
+        loop.run_forever()
 
 
 if __name__ == "__main__":
-    asyncio.run(window())
+    print("About to start")
+    asyncio.run(main())
